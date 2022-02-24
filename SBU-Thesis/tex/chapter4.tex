@@ -1,0 +1,478 @@
+
+\chapter{نتایج شبیه‌سازی}
+% !TeX root=../main.tex
+
+%\thispagestyle{empty} 
+\label{chap:results}
+\section{مقدمه} 
+ارائهٔ داده‌ها، نتایج، تحلیل و تفسیر اولیهٔ آنها در این فصل ارائه می‌شود. در ارائهٔ نتایج با توجه به راهنمای کلی نگارش فصل‌ها، تا حد امکان، ترکیبی از نمودار و جدول استفاده شود. با توجه به حجم و ماهیت تحقیق و با صلاحدید استاد راهنما، این فصل می‌تواند تحت عنوانی دیگر بیاید. در صورتی که حجم داده‌ها زیاد باشد، بهتر است به صورت نمودار یا در قالب ضمیمه ارائه نشده و فقط نمونه‌ها در متن آورده شود. در این فصل باید به سوالات تحقیق، عطف به یافته‌های محقق، پاسخ داده شود. اگر تحقیق دارای آزمون فرض باشد، پذیرش یا عدم پذیرش فرضیه‌ها در این فصل گزارش می‌شود. این فصل حدود ۴۰ صفحه است.
+
+\section{محتوا}
+در این بخش به سوالات تحقیق، بر اساس داده‌ها و یافته‌های محقق، پاسخ داده می‌شود. داده‌ها با فرمت مناسبی ارائه می‌شوند؛ مدل (ها) اجرا شده و نتیجه آن مشخص می‌شود.
+
+\section{اعتبارسنجی}
+از طریق مقایسهٔ نتایج با نتایج کارهای دیگران، استفاده از روش‌های تحلیل پایائی
+\lr{(reliability)}
+و اعتبار
+\lr{(validity)}،
+نظرگیری از خبرگان
+\lr{(expert judgment or feedback)}
+و یا
+\lr{triangulation}
+انجام می‌شود.
+
+
+\pgfplotsset{compat=1.16}
+\setcounter{plotno}{1}
+\ifcsname gconv\roman{plotno}\endcsname
+\else
+\expandafter\pgfmathsetmacro\csname gconv\roman{plotno}\endcsname{0.1}
+\fi
+\pgfplotstableread[col sep=comma,header=true]{%
+	y,x,myvalue
+	1,1,45
+	1,2,78
+	1,3,100
+	1,4,116
+	2,1,37
+	2,2,68
+	2,3,94
+	2,4,114
+	3,1,28
+	3,2,60
+	3,3,90
+	3,4,111
+	4,1,26
+	4,2,57
+	4,3,87
+	4,4,113
+}{\datatable}
+%
+%\pgfplotstablesort[col sep=comma,header=true]\resulttable{\datatable}
+\pgfplotstablesort[create on use/sortkey/.style={
+	create col/assign/.code={%
+		\edef\entry{{\thisrow{x}}{\thisrow{y}}{\thisrow{myvalue}}}%
+		\pgfkeyslet{/pgfplots/table/create col/next content}\entry
+	}
+},
+sort key=sortkey,
+sort cmp={%
+	iflessthan/.code args={#1#2#3#4}{%
+		\edef\temp{#1#2}%
+		\expandafter\pgfplotsmulticmpthree\temp\do{#3}{#4}%
+	},
+},
+sort,
+columns/Mtx/.style={string type},
+columns/Kind/.style={string type},]\resulttable{\datatable}
+
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}%[thick,scale=0.8, every node/.style={scale=0.8}]%[x={(0.866cm,-0.5cm)},y={(0.866cm,0.5cm)},z={(0cm,1 cm)}]
+	\pgfplotsset{set layers}
+	\begin{axis}[% from section 4.6.4 of the pgfplotsmanual
+	view={160}{30},
+	width=320pt,
+	height=280pt,
+	z buffer=none,
+	xmin=0,xmax=5,
+	ymin=0,ymax=5,
+	zmin=0,zmax=240,
+	enlargelimits=upper,
+	ztick={0,60,120,180,240},
+	zticklabels={0,30,60,90,120}, % here one has to "cheat"
+	% meaning that one has to put labels which are the actual value 
+	% divided by 2. This is because the bars will be centered at these
+	% values
+	xtick=data,
+	extra tick style={grid=major},
+	ytick=data,
+	grid=minor,
+	xlabel style={sloped},
+	ylabel style={sloped},
+	zlabel style={sloped},
+	xlabel={
+		{\scriptsize
+			اول
+			شارژی
+			نقطهٔ
+			خطوط
+			تعداد	
+		}
+	},
+	ylabel={{\scriptsize
+			دوم
+			شارژی
+			نقطهٔ
+			خطوط
+			تعداد	
+	}},
+	zlabel={{\scriptsize
+			مشتریان
+			تعداد
+		}
+	},
+	minor tick num=1,
+	point meta=explicit,
+	colormap name=viridis,
+	scatter/use mapped color={
+		draw=mapped color,fill=mapped color!70},
+	execute at begin plot={}            
+	]
+	\path let \p1=($(axis cs:0,0,1)-(axis cs:0,0,0)$) in 
+	\pgfextra{\pgfmathsetmacro{\conv}{2*\y1}
+		\expandafter\ifx\csname gconv\roman{plotno}\endcsname\conv
+		\else
+		\expandafter\xdef\csname gconv\roman{plotno}\endcsname{\conv}
+		\typeout{Please\space recompile\space the\space file!}
+		\fi     
+	};  
+	\path let \p1=($(axis cs:1,0,0)-(axis cs:0,0,0)$) in 
+	\pgfextra{\pgfmathsetmacro{\convx}{veclen(\x1,\y1)}
+		\typeout{One\space unit\space in\space x\space 
+			direction\space is\space\convx pt}
+	};                  
+	\path let \p1=($(axis cs:0,1,0)-(axis cs:0,0,0)$) in 
+	\pgfextra{\pgfmathsetmacro{\convy}{veclen(\x1,\y1)}
+		\typeout{One\space unit\space in\space y\space 
+			direction\space is\space\convy pt}
+	};                  
+	\addplot3 [visualization depends on={
+		\csname gconv\roman{plotno}\endcsname*z \as \myz}, % you may have to recompile to get the prefactor right
+	scatter/@pre marker code/.append style={/pgfplots/cube/size z=\myz},%
+	scatter/@pre marker code/.append style={/pgfplots/cube/size x=11.66135pt},%
+	scatter/@pre marker code/.append style={/pgfplots/cube/size y=9.10493pt},%
+	scatter,only marks,
+	mark=cube*,mark size=5,opacity=1]
+	table[x expr={\thisrow{x}},y expr={\thisrow{y}},z
+	expr={1*\thisrow{myvalue}},
+	meta expr={-1*\thisrow{x}}
+	] \resulttable;
+	\end{axis}
+	\makeatletter
+	\immediate\write\@mainaux{\xdef\string\gconv\roman{plotno}{\csname gconv\roman{plotno}\endcsname}\relax}
+	\makeatother
+	\end{tikzpicture}
+	
+	\caption{تعداد مشتریان نقطهٔ شارژی اول با تغییرات در تعداد خطوط سرویس‌دهی در نقاط شارژی}
+	\label{fig:191}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+\stepcounter{plotno}{}
+\ifcsname gconv\roman{plotno}\endcsname
+\else
+\expandafter\pgfmathsetmacro\csname gconv\roman{plotno}\endcsname{0.1}
+\fi
+\pgfplotstableread[col sep=comma,header=true]{%
+	y,x,myvalue
+	1,1,25
+	1,2,16
+	1,3,7
+	1,4,3
+	2,1,46
+	2,2,29
+	2,3,14
+	2,4,5
+	3,1,60
+	3,2,38
+	3,3,19
+	3,4,8
+	4,1,63
+	4,2,43
+	4,3,22
+	4,4,7
+}{\datatable}
+%
+%\pgfplotstablesort[col sep=comma,header=true]\resulttable{\datatable}
+\pgfplotstablesort[create on use/sortkey/.style={
+	create col/assign/.code={%
+		\edef\entry{{\thisrow{x}}{\thisrow{y}}{\thisrow{myvalue}}}%
+		\pgfkeyslet{/pgfplots/table/create col/next content}\entry
+	}
+},
+sort key=sortkey,
+sort cmp={%
+	iflessthan/.code args={#1#2#3#4}{%
+		\edef\temp{#1#2}%
+		\expandafter\pgfplotsmulticmpthree\temp\do{#3}{#4}%
+	},
+},
+sort,
+columns/Mtx/.style={string type},
+columns/Kind/.style={string type},]\resulttable{\datatable}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}%[thick,scale=0.8, every node/.style={scale=0.8}]%[x={(0.866cm,-0.5cm)},y={(0.866cm,0.5cm)},z={(0cm,1 cm)}]
+	\pgfplotsset{set layers}
+	\begin{axis}[% from section 4.6.4 of the pgfplotsmanual
+	view={160}{30},
+	width=320pt,
+	height=280pt,
+	z buffer=none,
+	xmin=0,xmax=5,
+	ymin=0,ymax=5,
+	zmin=0,zmax=140,
+	enlargelimits=upper,
+	ztick={0,20,60,100,140},
+	zticklabels={0,10,30,50,70}, % here one has to "cheat"
+	% meaning that one has to put labels which are the actual value 
+	% divided by 2. This is because the bars will be centered at these
+	% values
+	xtick=data,
+	extra tick style={grid=major},
+	ytick=data,
+	grid=minor,
+	xlabel style={sloped},
+	ylabel style={sloped},
+	zlabel style={sloped},
+	xlabel={
+		{\scriptsize
+			اول
+			شارژی
+			نقطهٔٔ
+			خطوط
+			تعداد	
+		}
+	},
+	ylabel={{\scriptsize
+			دوم
+			شارژی
+			نقطهٔٔ
+			خطوط
+			تعداد	
+	}},
+	zlabel={{\scriptsize
+			مشتریان
+			تعداد
+		}
+	},
+	minor tick num=1,
+	point meta=explicit,
+	colormap name=viridis,
+	scatter/use mapped color={
+		draw=mapped color,fill=mapped color!70},
+	execute at begin plot={}            
+	]
+	\path let \p1=($(axis cs:0,0,1)-(axis cs:0,0,0)$) in 
+	\pgfextra{\pgfmathsetmacro{\conv}{2*\y1}
+		\expandafter\ifx\csname gconv\roman{plotno}\endcsname\conv
+		\else
+		\expandafter\xdef\csname gconv\roman{plotno}\endcsname{\conv}
+		\typeout{Please\space recompile\space the\space file!}
+		\fi     
+	};  
+	\path let \p1=($(axis cs:1,0,0)-(axis cs:0,0,0)$) in 
+	\pgfextra{\pgfmathsetmacro{\convx}{veclen(\x1,\y1)}
+		\typeout{One\space unit\space in\space x\space 
+			direction\space is\space\convx pt}
+	};                  
+	\path let \p1=($(axis cs:0,1,0)-(axis cs:0,0,0)$) in 
+	\pgfextra{\pgfmathsetmacro{\convy}{veclen(\x1,\y1)}
+		\typeout{One\space unit\space in\space y\space 
+			direction\space is\space\convy pt}
+	};                  
+	\addplot3 [visualization depends on={
+		\csname gconv\roman{plotno}\endcsname*z \as \myz}, % you may have to recompile to get the prefactor right
+	scatter/@pre marker code/.append style={/pgfplots/cube/size z=\myz},%
+	scatter/@pre marker code/.append style={/pgfplots/cube/size x=11.66135pt},%
+	scatter/@pre marker code/.append style={/pgfplots/cube/size y=9.10493pt},%
+	scatter,only marks,
+	mark=cube*,mark size=5,opacity=1]
+	table[x expr={\thisrow{x}},y expr={\thisrow{y}},z
+	expr={1*\thisrow{myvalue}},
+	meta expr={-1*\thisrow{x}}
+	] \resulttable;
+	\end{axis}
+	\makeatletter
+	\immediate\write\@mainaux{\xdef\string\gconv\roman{plotno}{\csname gconv\roman{plotno}\endcsname}\relax}
+	\makeatother
+	\end{tikzpicture}
+	
+	\caption{تعداد مشتریان نقطهٔ شارژی دوم با تغییرات در تعداد خطوط سرویس‌دهی در نقاط شارژی}
+	\label{fig:181}
+\end{figure}
+
+
+
+
+\begin{figure}[!htbp]
+	
+	\pgfplotsset{width=10cm,compat=1.8}
+	\centering
+	\begin{tikzpicture}[thick, scale=0.9]
+	\begin{axis}[
+	ybar,
+	enlargelimits=0.15,
+	legend style={at={(0.5,-0.15)},
+		anchor=north,legend columns=-1},
+	ylabel={
+		روز
+		در
+		مشتریان
+		تعداد
+	},
+	symbolic x coords={1,2,3,4,5,6},
+	xtick=data,
+	nodes near coords,
+	nodes near coords align={vertical},
+	]
+	\addplot coordinates {(1,34) (2,40) (3,42) (4,43) (5,45) (6,49) };
+	\addplot coordinates {(1,57) (2,51) (3,48) (4,46) (5,44) (6,38)};
+	\legend{
+		اول
+		شارژی
+		نقطهٔٔ
+		,
+		دوم
+		شارژی
+		نقطهٔٔ
+	}
+	\end{axis}
+	\end{tikzpicture}
+	\caption{
+		تعداد مشتریان روزانه در ترکیب‌های قیمتی}
+	\label{fig:17}
+\end{figure}
+
+
+
+
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage{graphicx}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage{graphicx}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage{graphicx}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage{graphicx}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+
+
+\subsection{شکل‌های نمونه}
+\begin{filecontents}{d70.dat}
+	1,	543.980596910534
+	2,	1244.35637254359
+	3,	1981.31570250557
+	4,	2584.46482217798
+\end{filecontents}
+\begin{filecontents}{d71.dat}
+	1,	543.980596910534
+	2,	543.980596910534
+	3,	552.857807667966
+	4,	543.980596910534
+	
+\end{filecontents}
+
+\begin{figure}[!htbp]
+	\centering
+	\pgfplotsset{compat = 1.3}
+	\scalebox{1}{
+		\subfloat[	\label{fig:251}	کیلووات ساعت فروخته‌شده در نقطهٔ شارژی اول متاثر از تعداد خطوط سرویس‌دهی نقطهٔ شارژی اول با فرض ثابت بودن تعداد خطوط سرویس‌دهی در نقطهٔ شارژی دوم
+		($k_2=1$)
+		]{
+			\begin{tikzpicture}[thick, scale=0.7]
+			\begin{axis}[ylabel shift = 0.5 pt,
+			% don't scale y ticks ...
+			scaled y ticks=false,
+			xlabel={
+				اول
+				شارژی 
+				نقطهٔ
+				سرویس‌دهی
+				خطوط 
+				تعداد 
+			},ylabel={
+				فروخته‌شده
+				ساعت
+				کیلووات
+			},
+			xmin=0.5,
+			xmax=4.5,
+			legend style={font=\scriptsize,at={(0.6,.96)},anchor=north east},]
+			
+			% Graph column 2 versus column 0
+			\addplot table[x index=0,y index=1,col sep=comma] {d70.dat};
+			\addlegendentry{
+				اول
+				شارژی
+				نقطهٔ
+				در
+				انرژی
+				فروش
+			}% y index+1 since humans count from 1
+			
+			% Graph column 1 versus column 0    
+			
+			
+			\end{axis}
+			\end{tikzpicture}}\quad
+		\subfloat[کیلووات ساعت فروخته‌شده در نقطهٔ شارژی اول متاثر از تعداد خطوط سرویس‌دهی نقطهٔ شارژی دوم با \label{fig:252}فرض ثابت بودن تعداد خطوط سرویس‌دهی در نقطهٔ شارژی اول
+		($k_1=1$)
+		]{
+			\begin{tikzpicture}[thick, scale=0.7]
+			\begin{axis}
+			[
+			xlabel={
+				دوم
+				شارژی 
+				نقطهٔ
+				سرویس‌دهی
+				خطوط 
+				تعداد 
+			},
+			ylabel={
+				فروخته‌شده
+				ساعت
+				کیلووات
+			},
+			ymin=500,
+			ymax=600,
+			xmin=0.5,
+			xmax=4.5,
+			legend style={font=\scriptsize,at={(0.4,.96)},anchor=north west},]	
+			% Graph column 2 versus column 0
+			\addplot table[x index=0,y index=1,col sep=comma] {d71.dat};
+			\addlegendentry{
+				اول
+				شارژی
+				نقطهٔ
+				در
+				انرژی
+				فروش
+			}% y index+1 since humans count from 1
+			
+			% Graph column 1 versus column 0    
+			
+			
+			\end{axis}
+			\end{tikzpicture}}
+	}
+	\caption{فروش انرژی در نقطهٔ شارژی اول به ازای تغییر تعداد خطوط سرویس‌دهی}
+
+\end{figure}

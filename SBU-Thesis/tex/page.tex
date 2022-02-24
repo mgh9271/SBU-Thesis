@@ -1,0 +1,45 @@
+\documentclass{article}
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{amsthm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tikz}
+\usetikzlibrary{chains,shapes.multipart}
+\usetikzlibrary{shapes,calc}
+\usetikzlibrary{automata,positioning}
+% در این فایل، دستورها و تنظیمات مورد نیاز، آورده شده است
+
+\begin{document} 
+	\begin{figure}[!htbp]
+	\centering
+	\begin{tikzpicture}[start chain=going right,>=latex,node distance=0pt]
+	\node[draw,rectangle,on chain,minimum size=1.5cm] (rr) {};
+	\node[draw,rectangle,on chain,draw=white,minimum size=1.3cm]{};
+	% the rectangular shape with vertical lines
+	\node[rectangle split, rectangle split parts=6,
+	draw, rectangle split horizontal,text height=1cm,text depth=0.5cm,on chain,inner ysep=0pt] (wa) {};
+	\fill[white] ([xshift=-\pgflinewidth,yshift=-\pgflinewidth]wa.north west) rectangle ([xshift=-15pt,yshift=\pgflinewidth]wa.south);
+	\node at (wa.east) (A){};
+	\draw [-latex] (A) --+(30:1.5) coordinate (B1);
+	\draw [-latex] (A) --+(-30:1.5) coordinate (B2);
+	% the circle
+	\node [draw,circle,on chain,minimum size=1cm] at (B1) (se1) {$k_1$};
+	\node [draw,circle,on chain,minimum size=1cm] at (B2) (se2) {$k_2$};
+	\draw [-latex] (se1.east) --+(-25:1.65) coordinate (C1);
+	\draw [-latex] (se2.east) --+(25:1.65) coordinate (C2);
+	\node (O) at ($(C1)!0.5!(C2)$) {};
+	\node [draw,circle,on chain,minimum size=3pt] at (O) (C3){};
+	\draw [-latex] (C3)--+(0:2)node[right] {$\mu$};
+	% the arrows and labels
+	%   \draw[->] (se.east) -- +(20pt,0) node[right] {$\mu$};
+	\draw[<-] (wa.west) -- +(-20pt,0) node[left] {$\lambda$};
+	\node[align=center,below] at (rr.south) {بالقوه مشتریان جمعیت};
+	\node[align=center,below] at (wa.south) {صف تشکیل};
+	\node[align=center,below] at (se2.south) {سرویس‌دهی خطوط};
+	
+	\end{tikzpicture}
+	\caption{اجزای یک سیستم صف}
+	\label{fig:queue}
+\end{figure}
+\end{document}
