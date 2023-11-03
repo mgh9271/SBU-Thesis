@@ -80,6 +80,13 @@
 \@bscthesisfalse
 \DeclareOption{bsc}{\@bscthesistrue}
 \newif\if@mscthesis
+
+
+\newif\if@prpslthesis
+\@prpslthesisfalse
+\DeclareOption{prpsl}{\@prpslthesistrue}
+\newif\if@prpslthesis
+
 \@mscthesisfalse
 \DeclareOption{msc}{\@mscthesistrue}
 \newif\if@irfonts
@@ -95,7 +102,10 @@
  \if@bscthesis
  {\projectLabel{پروژه}}
  \else
-{\projectLabel{رساله}}
+ \if@prpslthesis
+ {\projectLabel{پیشنهاد پروژه}}
+ \else
+{\projectLabel{ رساله}}
 \fi\fi
 }\fi
 
